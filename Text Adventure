@@ -1,0 +1,114 @@
+import random
+
+# About the game, We have 8 rooms for each level, and we have 3 levels, in the first level there is a Map, in second level there is a Key, and in the third and last level there is a        # treasure.
+# this is going to generate 8 rooms, and each room will have like a short description so you can use your imagination.
+
+def generate_rooms(level):
+    return {
+        1: f"You are in level {level}. This room is dark and you can't see anything, let's check it out.",
+        2: f"You are in level {level}. There is just an empty room, it smells gross, let's take a look. Is maybe hidden somewhere in here.",
+        3: f"You are in level {level}. There are a lot of boxes in there, but they are all empty. looks like someone else is also looking for the treasure, so hurry up!",
+        4: f"You are in level {level}. This room seems to be empty, take a look.",
+        5: f"You are in level {level}. OH NO! THERE IS BLOOD ON THIS DOOR! STRANGE NOISES ARE GETTING LOUDER! HURRY UP AND GE IN!",
+        6: f"You are in level {level}. What is this?.. looks like... The treasure?.",
+        7: f"You are in level {level}. There are mirrors everywhere, and there is map in the wall.  lets check it out",
+        8: f"You are in level {level}. I can hear someone in this room, it doesn't sound like a human."
+    }
+
+# This are the riddles for each level and each door
+riddles = {
+    1: [
+        ("What is 4 * 6?", 24),
+        ("What is 8 + 5?", 13),
+        ("What is 15 - 7?", 8),
+        ("What is 3 * 9?", 27),
+        ("What is 10 / 2?", 5),
+        ("What is 12 + 8?", 20),
+        ("What is 5 * 5?", 25),
+        ("What is 20 - 3?", 17)
+    ],
+    2: [
+        ("What is 10 / 2?", 5),
+        ("What is 12 - 4?", 8),
+        ("What is 6 * 3?", 18),
+        ("What is 9 + 2?", 11),
+        ("What is 15 - 5?", 10),
+        ("What is 7 * 2?", 14),
+        ("What is 18 / 3?", 6),
+        ("What is 8 + 4?", 12)
+    ],
+    3: [
+        ("What is 5 * 5?", 25),
+        ("What is 16 - 4?", 12),
+        ("What is 3 * 7?", 21),
+        ("What is 2 + 9?", 11),
+        ("What is 14 / 2?", 7),
+        ("What is 8 * 2?", 16),
+        ("What is 11 - 3?", 8),
+        ("What is 20 / 4?", 5)
+    ]
+}
+
+# This are the level items
+levels_info = {
+    1: {"goal": "map"},
+    2: {"goal": "key"},
+    3: {"goal": "treasure"}
+}
+
+def show_position(room, level):
+    rooms = generate_rooms(level)
+    print(f"\n{rooms[room]}")
+
+def solve_riddle(level, room):
+    question_text, answer = riddles[level][room - 1]  
+    while True:
+        user_answer = input(question_text + " ")
+        try:
+            return int(user_answer) == answer
+        except ValueError:
+            print("Please enter a valid number.")
+
+def play_level(level):
+    goal_room = random.randint(1, 8)
+    print(f"\nWelcome to Level {level}! Select a door and resolve the riddles to find the {levels_info[level]['goal']}.")
+
+    while True:
+        print("\nAvailable rooms: 1, 2, 3, 4, 5, 6, 7, 8")
+        choice = input("Which room do you want to enter? (1-8 or 'exit' to quit): ")
+
+        if choice.lower() == 'exit':
+            print("Thanks for playing. Goodbye!")
+            return False
+        
+        if choice.isdigit() and int(choice) in range(1, 9):
+            room = int(choice)
+            show_position(room, level)
+
+            if solve_riddle(level, room):
+                print("Correct answer. You may enter!")
+                if room == goal_room:
+                    print(f"Congratulations! You've found the {levels_info[level]['goal']} of Level {level}.")
+                    return True
+                else:
+                    print("There's nothing here. You can exit and try another room.")
+            else:
+                print("Incorrect answer. You cannot enter.")
+        else:
+            print("Please choose a valid number between 1 and 8.")
+
+# This game starts with a introduction before start the game, this will help users to use their imagination.
+print("You are a treasure investigator on the verge of your greatest achievement.")
+print("Rumors say that in an ancient, abandoned building there lies a treasure.")
+print("You must be very careful, as those who have gone in search of the treasure have never returned.")
+print("All you know is that there is a map on the first floor of the building.")
+print("However, you will need to find the key before going after the treasure. Good luck!")
+
+for level in range(1, 4):
+    if not play_level(level):
+        break
+
+print("Congratulations! You've found the treasure. Time to go home and enjoy it B)")
+print(" ..:: Game Over::..")
+
+input("Press Enter to exit the program...")
